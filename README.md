@@ -1,4 +1,5 @@
 # Data-Science
+FOR THE WEBSCRAPING PYTHON FILE:
 1. Install bs4, requests, and html5lib to whatever IDE you use to run Python.
 2. For Pycharm, when the project is open, press Ctrl+Alt+S to open the project interpreter.
 3. Click on the tab that says "Project interpreter." 

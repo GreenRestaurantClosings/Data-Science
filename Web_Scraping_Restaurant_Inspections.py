@@ -17,8 +17,9 @@ def getRestaurantPages():
     for i in range(len(links)):
         links[i] = links[i].get('href')
     for i in range(len(links) - 1):
-        # The only links that lead to the pages we want to scrape begin with "search"
-        if links[i][0:6] == 'search':
+        # The only links that lead to the pages we want to scrape begin with "search".
+        # An example of links[i] would be "search.cfm?start=61&searchType=letter&srchLetter=".
+        if links[i].startsWith('search'):
             newLinks.append('http://il.healthinspections.us/champaign/' + links[i])
     return newLinks
 
@@ -44,11 +45,12 @@ def getPageInfo(link):
     for i in range(len(tableOfLinks)):
         tableOfLinks[i] = tableOfLinks[i].get('href')
         # All of the links to a restaurant begin with "estab".
-        if tableOfLinks[i][0:5] == 'estab':
+        # An example of tableOfLinks[i] would be "estab.cfm?facilityID=2690".
+        if tableOfLinks[i].startsWith('estab'):
             cleanLinks.append(tableOfLinks[i])
     # There is always one bold-tagged text element at the beginning and at the end of the
-    # array that isn't a restaurant name.
-    cleanNames = tableOfNames[1:len(tableOfNames) - 1]
+    # tableOfNames array that isn't a restaurant name.
+    cleanNames = tableOfNames[1:-1]
     returnArray = []
     for i in range(len(cleanLinks)):
         # We append the link we would like to go to for each restaurant, as opposed to the
@@ -77,13 +79,13 @@ def getReportInfo(reportLink):
     score2 = ''
     # Empty string for a representation of the number of critical violations.
     critical = ''
-    # Empty string for a representation of the number of repeated violations.
     repeats = ''
     for element in test:
         if checkDate:
             rawText = element.text
             # The date occurs at the end of this string, and has length 8.
-            rawText = rawText[len(rawText) - 8:len(rawText)]
+            DATE_LENGTH = 8
+            rawText = rawText[-DATE_LENGTH:]
             date = rawText
             # Once we find the date, we do not want to keep storing new text in date.
             checkDate = False
@@ -117,14 +119,15 @@ def reportArray(link):
     for i in range(len(links)):
         links[i] = links[i].get('href')
     # The first two links always do not lead to an inspection report.
-    trueLinks = links[2:]
+    BAD_LINKS = 2
+    trueLinks = links[BAD_LINKS:]
     reportsData = []
     for i in range(len(trueLinks)):
         string = trueLinks[i]
-        upper = len(string)
         # There are two extraneous characters at the beginning of each of the
         # inspection report link stubs.
-        linkAppend = string[2:upper]
+        BAD_CHARS = 2
+        linkAppend = string[BAD_CHARS:]
         # We append the link stub to the rest of the link that will lead
         # to the actual page that contains the report information.
         reportInfoLink = 'http://il.healthinspections.us' + linkAppend
@@ -133,17 +136,19 @@ def reportArray(link):
 
 # Primary function that returns a dictionary mapping the names of restaurants
 # on Green Street to an array as returned by the previous function.
+#
+# returns a dictionary
 def scrapeReports():
     pageLinks = getRestaurantPages()
     dictOfInfo = {}
     for pageLink in pageLinks:
         # Gets the info about a restaurant.
         namesAddrsLinks = getPageInfo(pageLink)
-        for i in range(len(namesAddrsLinks)):
+        for restaurantInfo in namesAddrsLinks:
             # If the restaurant's address contains "Green  ST", it's one of the
             # ones that we want to scrape.
-            if not (namesAddrsLinks[i][1].find('Green  ST') == -1):
-                dictOfInfo[namesAddrsLinks[i][0]] = namesAddrsLinks[i][2]
+            if not (restaurantInfo[1].find('Green  ST') == -1):
+                dictOfInfo[restaurantInfo[0]] = restaurantInfo[2]
     dictOfReportInfo = {}
     for rest in dictOfInfo:
         # For each restaurant we want to scrape info from, this maps

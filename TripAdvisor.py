@@ -7,16 +7,15 @@ tripAdvisorLink = "https://www.tripadvisor.com/RestaurantsNear-g36806-d7716227-o
 html_doc = requests.get(tripAdvisorLink % "").text
 
 soup = BeautifulSoup(html_doc, "html.parser" )
-lastPage = 0
+last_page = 0
 pages_html = []
 location_name = []
 location_rating = []
 
-lastPage = int(soup.find("div", {"class":"pgLinks"}).find_all('a')[-2].text)
-print(lastPage)
+last_page = int(soup.find("div", {"class":"pgLinks"}).find_all('a')[-2].text)
 
 restaurants = {}
-for page in range(1, lastPage+1):
+for page in range(1, last_page + 1):
 	soup = BeautifulSoup(html_doc, "html.parser" )
 	for info in soup.find_all('div', {"class":"near_listing"}):
 		location_name = (info.find('div', {"class":"location_name"})).find("a").text

@@ -16,6 +16,9 @@ last_page = int(soup.find("div", {"class":"pgLinks"}).find_all('a')[-2].text)
 
 restaurants = {}
 for page in range(1, last_page + 1):
+	if page != 1:
+		searchNumber = 30 * page - 30
+		html_doc = requests.get(tripAdvisorLink % str(searchNumber)).text
 	soup = BeautifulSoup(html_doc, "html.parser" )
 	for info in soup.find_all('div', {"class":"near_listing"}):
 		location_name = (info.find('div', {"class":"location_name"})).find("a").text
@@ -25,4 +28,5 @@ for page in range(1, last_page + 1):
 		restaurants[location_name] = bubbles
 	searchNumber = 30 * page - 30
 	html_doc = requests.get(tripAdvisorLink % str(searchNumber)).text
+
 print(restaurants)

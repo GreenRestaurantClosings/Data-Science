@@ -16,20 +16,27 @@ location_rating = []
 
 last_page = int(soup.find("div", {"class":"pgLinks"}).find_all('a')[-2].text)
 
-restaurants = {}
+info = []
 for page in range(1, last_page + 1):
 	if page != 1:
 		searchNumber = 30 * page - 30
 		html_doc = requests.get(tripAdvisorLink % str(searchNumber)).text
 	soup = BeautifulSoup(html_doc, "html.parser" )
-	for info in soup.find_all('div', {"class":"near_listing"}):
-		location_name = (info.find('div', {"class":"location_name"})).find("a").text
+	for findings in soup.find_all('div', {"class":"near_listing"}):
+		location_name = (findings.find('div', {"class":"location_name"})).find("a").text
 		bubbles = "0 out of 5 bubbles"
-		if (info.find('div', {"class":"rs rating"})):
-			bubbles = (info.find('div', {"class":"rs rating"})).find("span").get("alt")
-		restaurants[location_name] = bubbles
-
-print(restaurants)
+		if (findings.find('div', {"class":"rs rating"})):
+			bubbles = (findings.find('div', {"class":"rs rating"})).find("span").get("alt")
+		num_reviews = "0 reviews"
+		if (findings.find('div', {"class":"rs rating"})):
+			num_reviews = (findings.find('div', {"class":"rs rating"})).find("a").text
+		restaurant = {
+			"name": location_name,
+			"rating": bubbles,
+			"reviews": num_reviews
+		}
+		info.append(restaurant)
+print(info)
 
 config = {}
 
@@ -38,8 +45,7 @@ with open("configs.txt") as configs:
 	config = data["config"]
 
 firebase = pyrebase.initialize_app(config)
-db = firebase.database().child("TripAdvisor Restaurants")
-for i in restaurants:
-	data = {"Restaurant Name": i, "Trip Advisor Rating":restaurants[i]}
+db = firebase.database()
+for i in info:
+	data = {"Restaurant Name": i["name"], "Trip Advisor Rating": i["rating"], "Number of Reviews": i["reviews"]}
 	db.child("TripAdvisor Restaurants").push(data)
-

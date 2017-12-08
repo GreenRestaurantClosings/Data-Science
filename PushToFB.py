@@ -71,7 +71,7 @@ def query_api(term, location, offset):
             line1 = "NoAddress Oops"
         greenStreetRest["key"] = line1[:line1.index(" ")] + businesses[i]['name'][0]
         results.append(greenStreetRest)
-        print('{0} ---- {1}, {2}, {3}'.format(businesses[i]['review_count'], businesses[i]['rating'], businesses[i]['review_count'], greenStreetRest["key"]))
+        print('{0} ---- {1}, {2}, {3}'.format(businesses[i]['name'], businesses[i]['rating'], businesses[i]['review_count'], greenStreetRest["key"]))
     
     return results
 

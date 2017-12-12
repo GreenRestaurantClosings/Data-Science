@@ -67,9 +67,10 @@ def query_api(term, location, offset):
         greenStreetRest["Yelp Rating"] = businesses[i]['rating']
         greenStreetRest["YelpNumReviews"] = businesses[i]['review_count']
         line1 = businesses[i]['location']['address1']
-        if (line1 == None):
-            line1 = "NoAddress Oops"
-        greenStreetRest["key"] = line1[:line1.index(" ")] + businesses[i]['name'][0]
+        try:
+            greenStreetRest["key"] = line1[:line1.index(" ")] + businesses[i]['name'][0]
+        except:
+            continue
         results.append(greenStreetRest)
         print('{0} ---- {1}, {2}, {3}'.format(businesses[i]['name'], businesses[i]['rating'], businesses[i]['review_count'], greenStreetRest["key"]))
     
@@ -77,12 +78,16 @@ def query_api(term, location, offset):
 
 
 firebase = pyrebase.initialize_app(config)
-results = query_api('restaurant', 'Urbana, IL', OFFSET)
+results = query_api('restaurant', 'Champaign, IL', OFFSET) #ALSO PUSHED WITH LOCATION = URBANA, IL
+
+#Yelp only returns 50 restaurants per API request, but it has an "Offset" feature that moves
+# your set of results across the total results page BY THE OFFSET VALUE
+
 while (len(results) >= 50):
     for element in results:
         db = firebase.database().child("Restaurants").child(element["key"])
         db.update(element)
     OFFSET += SEARCH_LIMIT
-    results = query_api('restaurant', 'Urbana, IL', OFFSET)   
+    results = query_api('restaurant', 'Champaign, IL', OFFSET) #ALSO PUSHED WITH LOCATION = URBANA, IL  
     
 

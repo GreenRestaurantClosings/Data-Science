@@ -7,4 +7,4 @@ Team Members: Daniel Milgram, Kieran Kaempen, Suhirtha Raj , Susie Lee
 
 Project Manager: Osmar Coronel
 
-Holds our code for pulling data from sources and pushing to Firebase
+Holds our code for pulling data from sources and pushing to Firebase. Check /FullStack.

@@ -1,9 +1,10 @@
 # Data-Science
-FOR THE WEBSCRAPING PYTHON FILE:
-1. Install bs4, requests, and html5lib to whatever IDE you use to run Python.
-2. For Pycharm, when the project is open, press Ctrl+Alt+S to open the project interpreter.
-3. Click on the tab that says "Project interpreter." 
-4. Click the green "+" on the right side.
-5. Search for each of the packages above, and install it when you find it in the list.
-6. This should allow you to import and use the packages.
-7. You can now run the code. 
+Project: Restaurants Most Likely To Close on Green Street
+
+Description: Data was pulled from TripAdvisor, Yelp, and CU-CitizenAccess Food Health Inspections to develop an algorithm to calculate the percent chance of closures for restaurants on University of Illinois at Urbana-Champaign's campus.
+
+Team Members: Daniel Milgram, Kieran Kaempen, Suhirtha Raj , Susie Lee
+
+Project Manager: Osmar Coronel
+
+Holds our code for pulling data from sources and pushing to Firebase
